@@ -16,6 +16,4 @@ public abstract class ChessPiece : MonoBehaviour
     private Vector3 _positionCanMove;
 
     public abstract bool IsValidMove(int x, int y);
-    public abstract void SetPosition(int x, int y);
-    
 }

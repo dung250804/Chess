@@ -9,9 +9,4 @@ public class King : ChessPiece
         return Mathf.Abs(x - currentX) <= 1 &&
                Mathf.Abs(y - currentY) <= 1;
     }
-
-    public override void SetPosition(int x, int y)
-    {
-        throw new System.NotImplementedException();
-    }
 }

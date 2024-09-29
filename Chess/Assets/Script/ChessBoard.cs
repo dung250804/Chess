@@ -91,17 +91,17 @@ public class ChessBoard : MonoBehaviour
             ChessPieces[x, 1] = SpawnSinglePiece(PieceTeam.White, PieceType.Pawn, x, 1);
         }
         //BLACK TEAM
-        ChessPieces[0, 0] = SpawnSinglePiece(PieceTeam.Black, PieceType.Rook, 0, 7);
-        ChessPieces[1, 0] = SpawnSinglePiece(PieceTeam.Black, PieceType.Knight, 1, 7);
-        ChessPieces[2, 0] = SpawnSinglePiece(PieceTeam.Black, PieceType.Bishop, 2, 7);
-        ChessPieces[3, 0] = SpawnSinglePiece(PieceTeam.Black, PieceType.King, 3, 7);
-        ChessPieces[4, 0] = SpawnSinglePiece(PieceTeam.Black, PieceType.Queen, 4, 7);
-        ChessPieces[5, 0] = SpawnSinglePiece(PieceTeam.Black, PieceType.Bishop, 5, 7);
-        ChessPieces[6, 0] = SpawnSinglePiece(PieceTeam.Black, PieceType.Knight, 6, 7);
-        ChessPieces[7, 0] = SpawnSinglePiece(PieceTeam.Black, PieceType.Rook, 7, 7);
+        ChessPieces[0, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Rook, 0, 7);
+        ChessPieces[1, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Knight, 1, 7);
+        ChessPieces[2, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Bishop, 2, 7);
+        ChessPieces[3, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.King, 3, 7);
+        ChessPieces[4, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Queen, 4, 7);
+        ChessPieces[5, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Bishop, 5, 7);
+        ChessPieces[6, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Knight, 6, 7);
+        ChessPieces[7, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Rook, 7, 7);
         for (int x = 0; x < BoardSize; x++)
         {
-            ChessPieces[x, 1] = SpawnSinglePiece(PieceTeam.Black, PieceType.Pawn, x, 6);
+            ChessPieces[x, 6] = SpawnSinglePiece(PieceTeam.Black, PieceType.Pawn, x, 6);
         }
     }
 
@@ -127,9 +127,24 @@ public class ChessBoard : MonoBehaviour
     private ChessPiece SpawnSinglePiece(PieceTeam team, PieceType type, int x, int y)
     {
         ChessPiece chessPiece = ChessAssets.i.SpawnChessPiecePrefab(team, type, TileArray[x, y].transform);
+        PositioningChessPiece(chessPiece, x, y);
+        return chessPiece;
+    }
+    
+    private void PositioningChessPiece(ChessPiece chessPiece, int x, int y)
+    {
+        chessPiece.transform.position = TileArray[x, y].transform.position;
+        chessPiece.transform.parent = TileArray[x, y].transform;
         chessPiece.currentX = x;
         chessPiece.currentY = y;
-        return chessPiece;
+    }
+
+    public void MoveTo(ChessPiece chessPiece, int x, int y)
+    {
+        Vector2Int previousPosition = new Vector2Int(chessPiece.currentX, chessPiece.currentY);
+        ChessPieces[x, y] = chessPiece;
+        ChessPieces[previousPosition.x, previousPosition.y] = null;
+        PositioningChessPiece(chessPiece, x, y);
     }
 
     /**
@@ -171,19 +186,16 @@ public class ChessBoard : MonoBehaviour
 
     public Vector2Int GetTileIndex(GameObject currentTile)
     {
-        Vector2Int result = -Vector2Int.one;
-        Parallel.For(0, BoardSize, (x, state) =>
+        for (int x = 0; x < BoardSize; x++)
         {
             for (int y = 0; y < BoardSize; y++)
             {
                 if (currentTile.name == TileArray[x, y].name)
                 {
-                    result = new Vector2Int(x, y);
-                    state.Stop();
+                    return new Vector2Int(x, y);
                 }
             }
-        });
-
-        return result;
+        }
+        return -Vector2Int.one;
     }
 }

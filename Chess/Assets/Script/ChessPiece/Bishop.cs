@@ -8,9 +8,4 @@ public class Bishop : ChessPiece
     {
         return Mathf.Abs(x - currentX) == Mathf.Abs(y - currentY);
     }
-
-    public override void SetPosition(int x, int y)
-    {
-        throw new System.NotImplementedException();
-    }
 }

@@ -6,11 +6,8 @@ public class Queen : ChessPiece
 {
     public override bool IsValidMove(int x, int y)
     {
-        return x == currentX || y == currentY || Mathf.Abs(x - currentX) == Mathf.Abs(y - currentY);;
+        return x == currentX || y == currentY || Mathf.Abs(x - currentX) == Mathf.Abs(y - currentY);
     }
+    
 
-    public override void SetPosition(int x, int y)
-    {
-        throw new System.NotImplementedException();
-    }
 }

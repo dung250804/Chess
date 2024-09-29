@@ -20,9 +20,10 @@ public class InteractSystem : MonoBehaviour
 
     public ChessPiece currentChosenChessPiece;
     public Vector2Int previousPosition;
-    
-    void FixedUpdate()
+
+    void Update()
     {
+        if (!Input.GetMouseButtonDown(0)) return;
         RaycastHit hit;
         Ray ray = ChessBoard.Instance.gameCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -34,31 +35,37 @@ public class InteractSystem : MonoBehaviour
             // If the object hit is a Tile
             if (selectionTransform.gameObject.CompareTag("Tile"))
             {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    Vector2Int choosePiecePosition = ChessBoard.Instance.GetTileIndex(selectionTransform.gameObject);
-                    if (ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y] != null)
-                    {
-                        // if my turn
-                        if (true)
-                        {
-                            currentChosenChessPiece = ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y];
-                        }
-                    }
-                }
-
-                if (currentChosenChessPiece != null && Input.GetMouseButtonUp(0))
+                if (currentChosenChessPiece != null)
                 {
                     Vector2Int chooseTargetPosition = ChessBoard.Instance.GetTileIndex(selectionTransform.gameObject);
                     if (currentChosenChessPiece.IsValidMove(chooseTargetPosition.x, chooseTargetPosition.y))
                     {
                         previousPosition = new Vector2Int(currentChosenChessPiece.currentX,
                             currentChosenChessPiece.currentY);
-                        
+
+                        if (currentChosenChessPiece.IsValidMove(chooseTargetPosition.x, chooseTargetPosition.y))
+                        {
+                            Debug.Log(currentChosenChessPiece);
+                            ChessBoard.Instance.MoveTo(currentChosenChessPiece, chooseTargetPosition.x,
+                                chooseTargetPosition.y);
+                        }
+
+                        currentChosenChessPiece = null;
+                        return;
+                    }
+                }
+                    
+                Vector2Int choosePiecePosition = ChessBoard.Instance.GetTileIndex(selectionTransform.gameObject);
+                if (ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y] != null)
+                {
+                    // if my turn
+                    if (true)
+                    {
+                        currentChosenChessPiece =
+                            ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y];
                     }
                 }
             }
         }
-        
     }
 }

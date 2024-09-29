@@ -18,9 +18,6 @@ public class Pawn : ChessPiece
 
         return false;
     }
+    
 
-    public override void SetPosition(int x, int y)
-    {
-        throw new System.NotImplementedException();
-    }
 }

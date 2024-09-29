@@ -59,7 +59,6 @@ public class ChessAssets : MonoBehaviour
             if (chessPiece.team == team && chessPiece.type == type)
             {
                 GameObject spawnChessPiece = Instantiate(prefab);
-                spawnChessPiece.transform.position = parent.position;
                 spawnChessPiece.transform.parent = parent;
                 ChessPiece result = spawnChessPiece.GetComponent<ChessPiece>();
                 return result;
