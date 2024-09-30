@@ -8,6 +8,9 @@ public class Queen : ChessPiece
     {
         return x == currentX || y == currentY || Mathf.Abs(x - currentX) == Mathf.Abs(y - currentY);
     }
-    
 
+    public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board)
+    {
+        throw new System.NotImplementedException();
+    }
 }

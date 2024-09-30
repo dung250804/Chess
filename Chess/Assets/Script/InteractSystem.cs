@@ -42,17 +42,16 @@ public class InteractSystem : MonoBehaviour
                     {
                         previousPosition = new Vector2Int(currentChosenChessPiece.currentX,
                             currentChosenChessPiece.currentY);
-
-                        if (currentChosenChessPiece.IsValidMove(chooseTargetPosition.x, chooseTargetPosition.y))
-                        {
-                            Debug.Log(currentChosenChessPiece);
-                            ChessBoard.Instance.MoveTo(currentChosenChessPiece, chooseTargetPosition.x,
-                                chooseTargetPosition.y);
-                        }
-
+                        Debug.Log(currentChosenChessPiece);
+                        ChessBoard.Instance.MoveTo(currentChosenChessPiece, chooseTargetPosition.x,
+                            chooseTargetPosition.y);
                         currentChosenChessPiece = null;
+                        ChessBoard.Instance.HideAllHighlightAvailableMoves();
                         return;
+                        
                     }
+                    currentChosenChessPiece = null;
+                    ChessBoard.Instance.HideAllHighlightAvailableMoves();
                 }
                     
                 Vector2Int choosePiecePosition = ChessBoard.Instance.GetTileIndex(selectionTransform.gameObject);
@@ -63,6 +62,9 @@ public class InteractSystem : MonoBehaviour
                     {
                         currentChosenChessPiece =
                             ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y];
+                        List<Vector2Int> availableMoves =
+                            currentChosenChessPiece.GetAvailableMoves(ref ChessBoard.Instance.ChessPieces);
+                        ChessBoard.Instance.ShowAllHighlightAvailableMoves(availableMoves);
                     }
                 }
             }

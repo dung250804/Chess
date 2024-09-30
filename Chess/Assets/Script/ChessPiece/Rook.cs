@@ -8,4 +8,9 @@ public class Rook : ChessPiece
     {
         return x == currentX || y == currentY;
     }
+
+    public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board)
+    {
+        throw new System.NotImplementedException();
+    }
 }

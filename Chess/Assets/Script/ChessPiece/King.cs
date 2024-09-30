@@ -9,4 +9,9 @@ public class King : ChessPiece
         return Mathf.Abs(x - currentX) <= 1 &&
                Mathf.Abs(y - currentY) <= 1;
     }
+
+    public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board)
+    {
+        throw new System.NotImplementedException();
+    }
 }
