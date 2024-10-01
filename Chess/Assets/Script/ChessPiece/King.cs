@@ -4,14 +4,43 @@ using UnityEngine;
 
 public class King : ChessPiece
 {
-    public override bool IsValidMove(int x, int y)
-    {
-        return Mathf.Abs(x - currentX) <= 1 &&
-               Mathf.Abs(y - currentY) <= 1;
-    }
 
     public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board)
     {
-        throw new System.NotImplementedException();
+        List<Vector2Int> result = new List<Vector2Int>();
+        
+        // Tạo các hướng di chuyển của Vua
+        Vector2Int[] directions = new Vector2Int[]
+        {
+            new Vector2Int(0, 1),   // Up
+            new Vector2Int(0, -1),  // Down
+            new Vector2Int(1, 0),   // Right
+            new Vector2Int(-1, 0),  // Left
+            new Vector2Int(1, 1),   // Up Right
+            new Vector2Int(-1, 1),  // Up Left
+            new Vector2Int(1, -1),  // Down Right
+            new Vector2Int(-1, -1)  // Down Left
+        };
+        
+        foreach (Vector2Int direction in directions)
+        {
+            int newX = currentX + direction.x;
+            int newY = currentY + direction.y;
+
+            if (IsInsideBoard(newX, newY))
+            {
+                ChessPiece targetPiece = board[newX, newY];
+                
+                if (targetPiece == null || targetPiece.team != team)
+                {
+                    result.Add(new Vector2Int(newX, newY));
+                }
+            }
+        }
+
+        // (Thêm) Kiểm tra các ô không bị chiếu
+        // ....................................
+
+        return result;
     }
 }

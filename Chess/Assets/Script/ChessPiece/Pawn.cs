@@ -8,43 +8,36 @@ public class Pawn : ChessPiece
 
     public override bool IsValidMove(int x, int y)
     {
+        if (CanEnPassant(new Vector2Int(x, y)))
+        {
+            Destroy(currentEnPassantTarget.gameObject);
+            _enPassantTarget = new Vector2Int(-1, -1);
+            currentEnPassantTarget = null;
+            return true;
+        }
+
+        if (_enPassantTarget != new Vector2Int(-1, -1) && currentEnPassantTarget != null)
+        {
+            _enPassantTarget = new Vector2Int(-1, -1);
+            currentEnPassantTarget = null;
+        }
+        
+        List<Vector2Int> availableMoves = GetAvailableMoves(ref ChessBoard.Instance.ChessPieces);
         int direction = team == PieceTeam.White ? 1 : -1;
-
-        // Di chuyển thẳng 1 ô
-        if (x == currentX && y == currentY + direction)
+        
+        foreach (Vector2Int move in availableMoves)
         {
-            if (ChessBoard.Instance.ChessPieces[currentX, currentY + direction] == null) 
-                return true;
-        }
-
-        // Di chuyển thẳng 2 ô ở lượt đầu
-        if (currentY == (team == PieceTeam.White ? 1 : 6) && 
-            x == currentX && y == currentY + 2 * direction)
-        {
-            if (ChessBoard.Instance.ChessPieces[currentX, currentY + direction] == null && 
-                ChessBoard.Instance.ChessPieces[currentX, currentY + 2 * direction] == null)
+            if (x == move.x && y == move.y)
             {
-                _enPassantTarget = new Vector2Int(currentX, currentY + direction); // Đặt mục tiêu cho en passant
-                currentEnPassantTarget = this;
+                if (x == currentX && y == currentY + 2 * direction)
+                {
+                    _enPassantTarget = new Vector2Int(currentX, currentY + direction); // Đặt mục tiêu cho en passant
+                    currentEnPassantTarget = this;
+                }
                 return true;
             }
         }
-
-        // Ăn chéo
-        if ((x == currentX + 1 || x == currentX - 1) && y == currentY + direction)
-        {
-            if (ChessBoard.Instance.ChessPieces[x, y] != null && ChessBoard.Instance.ChessPieces[x, y].team != team)
-                return true;
-
-            // Kiểm tra nước đi en passant
-            if (CanEnPassant(new Vector2Int(x, currentY + direction)))
-            {
-                Destroy(currentEnPassantTarget.gameObject);
-                _enPassantTarget = new Vector2Int(-1, -1);
-                currentEnPassantTarget = null;
-                return true;
-            }
-        }
+        
 
         return false;
     }
@@ -90,7 +83,6 @@ public class Pawn : ChessPiece
                 result.Add(new Vector2Int(_enPassantTarget.x, _enPassantTarget.y));
             }
         }
-
         return result;
     }
 
@@ -106,10 +98,5 @@ public class Pawn : ChessPiece
         }
 
         return false;
-    }
-    
-    private bool IsInsideBoard(int x, int y)
-    {
-        return x >= 0 && x < 8 && y >= 0 && y < 8;
     }
 }

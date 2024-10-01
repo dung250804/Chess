@@ -4,15 +4,73 @@ using UnityEngine;
 
 public class Knight : ChessPiece
 {
-    public override bool IsValidMove(int x, int y)
-    {
-        int dx = Mathf.Abs(x - currentX);
-        int dy = Mathf.Abs(y - currentY);
-        return (dx == 2 && dy == 1) || (dx == 1 && dy == 2);
-    }
 
     public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board)
     {
-        throw new System.NotImplementedException();
+        List<Vector2Int> result = new List<Vector2Int>();
+        int x, y;
+        
+        
+        // Top Right
+        x = currentX + 1;
+        y = currentY + 2;
+        if (IsInsideBoard(x,y) && (board[x,y] == null || board[x,y].team != team))
+        {
+            result.Add(new Vector2Int(x,y));
+        }
+        
+        x = currentX + 2;
+        y = currentY + 1;
+        if (IsInsideBoard(x,y) && (board[x,y] == null || board[x,y].team != team))
+        {
+            result.Add(new Vector2Int(x,y));
+        }
+        
+        // Top left
+        x = currentX - 1;
+        y = currentY + 2;
+        if (IsInsideBoard(x,y) && (board[x,y] == null || board[x,y].team != team))
+        {
+            result.Add(new Vector2Int(x,y));
+        }
+        
+        x = currentX - 2;
+        y = currentY + 1;
+        if (IsInsideBoard(x,y) && (board[x,y] == null || board[x,y].team != team))
+        {
+            result.Add(new Vector2Int(x,y));
+        }
+        
+        // Bottom Right
+        x = currentX + 1;
+        y = currentY - 2;
+        if (IsInsideBoard(x,y) && (board[x,y] == null || board[x,y].team != team))
+        {
+            result.Add(new Vector2Int(x,y));
+        }
+        
+        x = currentX + 2;
+        y = currentY - 1;
+        if (IsInsideBoard(x,y) && (board[x,y] == null || board[x,y].team != team))
+        {
+            result.Add(new Vector2Int(x,y));
+        }
+        
+        // Bottom Left
+        x = currentX - 1;
+        y = currentY - 2;
+        if (IsInsideBoard(x,y) && (board[x,y] == null || board[x,y].team != team))
+        {
+            result.Add(new Vector2Int(x,y));
+        }
+        
+        x = currentX - 2;
+        y = currentY - 1;
+        if (IsInsideBoard(x,y) && (board[x,y] == null || board[x,y].team != team))
+        {
+            result.Add(new Vector2Int(x,y));
+        }
+        
+        return result;
     }
 }

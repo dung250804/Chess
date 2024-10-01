@@ -31,9 +31,22 @@ public abstract class ChessPiece : MonoBehaviour
         }
     }
 
-    public abstract bool IsValidMove(int x, int y);
+    public virtual bool IsValidMove(int x, int y)
+    {
+        List<Vector2Int> availableMoves = GetAvailableMoves(ref ChessBoard.Instance.ChessPieces);
+        
+        foreach (Vector2Int move in availableMoves)
+        {
+            if (x == move.x && y == move.y)
+            {
+                return true;
+            }
+        }
 
-    public virtual void SetPosition(Vector2Int position, bool force = false)
+        return false;
+    }
+
+    public void SetPosition(Vector2Int position, bool force = false)
     {
         _targetPosition = position;
         transform.parent = ChessBoard.Instance.TileArray[position.x, position.y].transform;
@@ -46,4 +59,9 @@ public abstract class ChessPiece : MonoBehaviour
     }
 
     public abstract List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board);
+    
+    public bool IsInsideBoard(int x, int y)
+    {
+        return x >= 0 && x < 8 && y >= 0 && y < 8;
+    }
 }
