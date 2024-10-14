@@ -17,12 +17,13 @@ public abstract class ChessPiece : MonoBehaviour
     private Vector2Int _targetPosition = -Vector2Int.one;
 
     public bool isMoving = false;
+    public bool hasMoved = false;
 
     private void Update()
     {
         if (isMoving && transform.parent.position == transform.position)
         {
-            
+            isMoving = false;
         }
         if(_targetPosition == -Vector2Int.one || transform.parent.position == transform.position) return;
         if (isMoving)
@@ -62,6 +63,6 @@ public abstract class ChessPiece : MonoBehaviour
     
     public bool IsInsideBoard(int x, int y)
     {
-        return x >= 0 && x < 8 && y >= 0 && y < 8;
+        return x is >= 0 and < 8 && y is >= 0 and < 8;
     }
 }

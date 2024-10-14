@@ -34,6 +34,10 @@ public class ChessAssets : MonoBehaviour
     
     //Chess piece data
     public List<GameObject> chessPiecePrefab;
+    
+    //UI
+    public Sprite winTrophy;
+    public Sprite loseTrophy;
 
     private void Awake()
     {

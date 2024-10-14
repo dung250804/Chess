@@ -116,11 +116,12 @@ public class ChessBoard : MonoBehaviour
                 {
                     foreach (Transform child in TileArray[x, y].transform)
                     {
-                        Destroy(child);
+                        Destroy(child.gameObject);
                     }
                 }
             }
         }
+        availableMoves.Clear();
         InitAllChessPieces();
     }
 
@@ -145,8 +146,20 @@ public class ChessBoard : MonoBehaviour
         //Nếu có quân cờ ở đó
         if (ChessPieces[x, y] != null)
         {
-            if (chessPiece.team == ChessPieces[x, y].team) return;
+            if (chessPiece.team == ChessPieces[x, y].team)
+            {
+                if (chessPiece.type != PieceType.King || ChessPieces[x, y].type != PieceType.Rook)
+                {
+                    Debug.Log("return");
+                    return;
+                }
+            }
             
+            //Checkmate
+            if (ChessPieces[x, y].type == PieceType.King)
+            {
+                CheckMate(ChessPieces[x, y].team == PieceTeam.Black ? PieceTeam.Black : PieceTeam.White);
+            }
             foreach (Transform child in TileArray[x,y].transform)
             {
                 Destroy(child.gameObject);
@@ -158,6 +171,7 @@ public class ChessBoard : MonoBehaviour
         ChessPieces[x, y] = chessPiece;
         ChessPieces[previousPosition.x, previousPosition.y] = null;
         chessPiece.isMoving = true;
+        chessPiece.hasMoved = true;
     }
 
     /**
@@ -263,5 +277,15 @@ public class ChessBoard : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void CheckMate(PieceTeam team)
+    {
+        DisplayVictory(team);
+    }
+    
+    private void DisplayVictory(PieceTeam team)
+    {
+        CanvasController.Instance.ShowEndGameMenu(team);
     }
 }

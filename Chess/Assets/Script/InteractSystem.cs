@@ -20,6 +20,7 @@ public class InteractSystem : MonoBehaviour
 
     public ChessPiece currentChosenChessPiece;
     public Vector2Int previousPosition;
+    public bool isWhiteTurn = true;
 
     void Update()
     {
@@ -47,6 +48,7 @@ public class InteractSystem : MonoBehaviour
                             chooseTargetPosition.y);
                         currentChosenChessPiece = null;
                         ChessBoard.Instance.HideAllHighlightAvailableMoves();
+                        isWhiteTurn = !isWhiteTurn;
                         return;
                         
                     }
@@ -58,7 +60,8 @@ public class InteractSystem : MonoBehaviour
                 if (ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y] != null)
                 {
                     // if my turn
-                    if (true)
+                    if ((ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y].team == PieceTeam.White && isWhiteTurn)
+                        || (ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y].team == PieceTeam.Black && !isWhiteTurn))
                     {
                         currentChosenChessPiece =
                             ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y];
