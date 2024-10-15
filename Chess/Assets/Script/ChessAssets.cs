@@ -39,6 +39,9 @@ public class ChessAssets : MonoBehaviour
     public Sprite winTrophy;
     public Sprite loseTrophy;
 
+    public List<Sprite> blackPieceUI;
+    public List<Sprite> whitePieceUI;
+
     private void Awake()
     {
         chessPiecePrefab.Add(kingBlack);

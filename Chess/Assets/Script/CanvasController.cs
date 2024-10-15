@@ -23,11 +23,15 @@ public class CanvasController : MonoBehaviour
     }
     
     [SerializeField] private GameObject fullInGameMenu;
+    [SerializeField] private GameObject menuContainer;
+    [SerializeField] private GameObject promotionContainer;
     [SerializeField] private GameObject endgameContainer;
     [SerializeField] private GameObject newGameButton;
     [SerializeField] private GameObject continueButton;
     [SerializeField] private GameObject saveButton;
     [SerializeField] private GameObject exitButton;
+    
+    [SerializeField] private List<Image> promotePieceImg;
 
     public bool isOpen = false;
 
@@ -47,11 +51,13 @@ public class CanvasController : MonoBehaviour
     {
         isOpen = true;
         fullInGameMenu.SetActive(true);
+        menuContainer.SetActive(true);
         endgameContainer.SetActive(false);
         newGameButton.SetActive(true);
         continueButton.SetActive(true);
         saveButton.SetActive(true);
         exitButton.SetActive(true);
+        promotionContainer.SetActive(false);
         SetInGameMenuButtonPosition();
     }
     
@@ -66,12 +72,43 @@ public class CanvasController : MonoBehaviour
         SetImageAndTextEndGame(team);
         isOpen = true;
         fullInGameMenu.SetActive(true);
+        menuContainer.SetActive(true);
         endgameContainer.SetActive(true);
         newGameButton.SetActive(true);
         continueButton.SetActive(false);
         saveButton.SetActive(false);
         exitButton.SetActive(true);
+        promotionContainer.SetActive(false);
         SetEndGameMenuButtonPosition();
+    }
+    
+    public void ShowPromoteChoice()
+    {
+        if(Pawn.currentPromotePawn == null) return;
+        PieceTeam team = Pawn.currentPromotePawn.team;
+        isOpen = true;
+        if (team == PieceTeam.Black)
+        {
+            int i = 0;
+            foreach (Image image in promotePieceImg)
+            {
+                image.sprite = ChessAssets.i.blackPieceUI[i];
+                i++;
+            }
+        } 
+        else if (team == PieceTeam.White)
+        {
+            int i = 0;
+            foreach (Image image in promotePieceImg)
+            {
+                image.sprite = ChessAssets.i.whitePieceUI[i];
+                i++;
+            }
+        }
+        fullInGameMenu.SetActive(true);
+        promotionContainer.SetActive(true);
+        menuContainer.SetActive(false);
+        endgameContainer.SetActive(false);
     }
 
     private void SetImageAndTextEndGame(PieceTeam team)
@@ -124,6 +161,48 @@ public class CanvasController : MonoBehaviour
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
+    }
+    
+    public void OnQueenButton()
+    {
+        int x = Pawn.currentPromotePawn.currentX;
+        int y = Pawn.currentPromotePawn.currentY;
+        PieceTeam team = Pawn.currentPromotePawn.team;
+        ChessBoard.Instance.DestroyPieceOnTile(x,y);
+        ChessBoard.Instance.ChessPieces[x, y] = ChessBoard.Instance.SpawnSinglePiece(team, PieceType.Queen, x, y);
+        HideInGameMenu();
+    }
+    
+    public void OnKnightButton()
+    {
+        int x = Pawn.currentPromotePawn.currentX;
+        int y = Pawn.currentPromotePawn.currentY;
+        PieceTeam team = Pawn.currentPromotePawn.team;
+        ChessBoard.Instance.DestroyPieceOnTile(x,y);
+        ChessBoard.Instance.ChessPieces[x, y] = ChessBoard.Instance.SpawnSinglePiece(team, PieceType.Knight, x, y);
+        HideInGameMenu();
+    }
+    
+    public void OnRookButton()
+    {
+        int x = Pawn.currentPromotePawn.currentX;
+        int y = Pawn.currentPromotePawn.currentY;
+        PieceTeam team = Pawn.currentPromotePawn.team;
+        ChessBoard.Instance.DestroyPieceOnTile(x,y);
+        ChessBoard.Instance.ChessPieces[x, y] = ChessBoard.Instance.SpawnSinglePiece(team, PieceType.Rook, x, y);
+        HideInGameMenu();
+        HideInGameMenu();
+    }
+    
+    public void OnBishopButton()
+    {
+        int x = Pawn.currentPromotePawn.currentX;
+        int y = Pawn.currentPromotePawn.currentY;
+        PieceTeam team = Pawn.currentPromotePawn.team;
+        ChessBoard.Instance.DestroyPieceOnTile(x,y);
+        ChessBoard.Instance.ChessPieces[x, y] = ChessBoard.Instance.SpawnSinglePiece(team, PieceType.Bishop, x, y);
+        HideInGameMenu();
+        HideInGameMenu();
     }
     
 }

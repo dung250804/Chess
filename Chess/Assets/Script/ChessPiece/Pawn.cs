@@ -5,6 +5,7 @@ public class Pawn : ChessPiece
 {
     private static Vector2Int _enPassantTarget = new Vector2Int(-1, -1); // Vị trí của quân Tốt có thể bị bắt qua sông
     private static ChessPiece currentEnPassantTarget = null;
+    public static ChessPiece currentPromotePawn = null;
 
     public override bool IsValidMove(int x, int y)
     {
@@ -34,11 +35,12 @@ public class Pawn : ChessPiece
                     _enPassantTarget = new Vector2Int(currentX, currentY + direction); // Đặt mục tiêu cho en passant
                     currentEnPassantTarget = this;
                 }
+
+                CheckPromote(new Vector2Int(x, y));
                 return true;
             }
         }
         
-
         return false;
     }
 
@@ -86,7 +88,7 @@ public class Pawn : ChessPiece
         return result;
     }
 
-    public bool CanEnPassant(Vector2Int position)
+    private bool CanEnPassant(Vector2Int position)
     {
         if (_enPassantTarget == position)
         {
@@ -98,5 +100,19 @@ public class Pawn : ChessPiece
         }
 
         return false;
+    }
+    
+    private bool CanPromote(Vector2Int position)
+    {
+        return position.y is 0 or 7;
+    }
+    
+    private void CheckPromote(Vector2Int position)
+    {
+        if (CanPromote(position))
+        {
+            currentPromotePawn = this;
+            CanvasController.Instance.ShowPromoteChoice();
+        }
     }
 }

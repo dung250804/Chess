@@ -24,6 +24,7 @@ public class InteractSystem : MonoBehaviour
 
     void Update()
     {
+        if (CanvasController.Instance.isOpen) return;
         if (!Input.GetMouseButtonDown(0)) return;
         RaycastHit hit;
         Ray ray = ChessBoard.Instance.gameCamera.ScreenPointToRay(Input.mousePosition);

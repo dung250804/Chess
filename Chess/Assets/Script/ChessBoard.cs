@@ -112,20 +112,26 @@ public class ChessBoard : MonoBehaviour
         {
             for (int y = 0; y < BOARD_SIZE; y++)
             {
-                if (TileArray[x, y].transform.childCount > 0)
-                {
-                    foreach (Transform child in TileArray[x, y].transform)
-                    {
-                        Destroy(child.gameObject);
-                    }
-                }
+                DestroyPieceOnTile(x,y);
             }
         }
         availableMoves.Clear();
         InitAllChessPieces();
     }
 
-    private ChessPiece SpawnSinglePiece(PieceTeam team, PieceType type, int x, int y)
+    public void DestroyPieceOnTile(int x, int y)
+    {
+        if (TileArray[x, y].transform.childCount > 0)
+        {
+            foreach (Transform child in TileArray[x, y].transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+        ChessPieces[x, y] = null;
+    }
+
+    public ChessPiece SpawnSinglePiece(PieceTeam team, PieceType type, int x, int y)
     {
         ChessPiece chessPiece = ChessAssets.i.SpawnChessPiecePrefab(team, type, TileArray[x, y].transform);
         PositioningChessPiece(chessPiece, TileArray[x, y].transform);

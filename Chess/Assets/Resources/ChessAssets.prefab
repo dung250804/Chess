@@ -59,3 +59,17 @@ MonoBehaviour:
   chessPiecePrefab: []
   winTrophy: {fileID: 21300000, guid: adaa3fb7adcb00649a59a54943ecc0e5, type: 3}
   loseTrophy: {fileID: 21300000, guid: 1abde4b8e912e8b4099ea0ff6992e5cf, type: 3}
+  blackPieceUI:
+  - {fileID: 21300000, guid: 695f9abae6360934eae96ceaa40e7110, type: 3}
+  - {fileID: 21300000, guid: 12b51caf5b3f6ce449b50522f8c14f1d, type: 3}
+  - {fileID: 21300000, guid: 15249f6212dca9e4c82de847185f9e98, type: 3}
+  - {fileID: 21300000, guid: 4e71f15fa41c4b747bddbd921e26b6ed, type: 3}
+  - {fileID: 21300000, guid: d7209909618d3084db3b494d7837646e, type: 3}
+  - {fileID: 21300000, guid: 8cd851f3eb3269a42b7f441ca1652a86, type: 3}
+  whitePieceUI:
+  - {fileID: 21300000, guid: 3d7e4bba830b3bf42a86b93b7671c202, type: 3}
+  - {fileID: 21300000, guid: fbb80a0b4e1e41f4b89d66d8717e74fd, type: 3}
+  - {fileID: 21300000, guid: 1731bca6e5996e24c962ea6345dabc9a, type: 3}
+  - {fileID: 21300000, guid: 3212bb5b088125b43b8e016c01a07753, type: 3}
+  - {fileID: 21300000, guid: bf684b6647e1e6d4281060a430223e8d, type: 3}
+  - {fileID: 21300000, guid: f8c1f3565ae5dd240b7ebb08bf958756, type: 3}
