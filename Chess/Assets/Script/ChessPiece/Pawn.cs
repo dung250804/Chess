@@ -23,7 +23,7 @@ public class Pawn : ChessPiece
             currentEnPassantTarget = null;
         }
         
-        List<Vector2Int> availableMoves = GetAvailableMoves(ref ChessBoard.Instance.ChessPieces);
+        List<Vector2Int> availableMoves = GetAvailableMoves();
         int direction = team == PieceTeam.White ? 1 : -1;
         
         foreach (Vector2Int move in availableMoves)
@@ -44,35 +44,35 @@ public class Pawn : ChessPiece
         return false;
     }
 
-    public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board)
+    public override List<Vector2Int> GetAvailableMoves()
     {
         List<Vector2Int> result = new List<Vector2Int>();
         int direction = team == PieceTeam.White ? 1 : -1;
 
         // Di chuyển thẳng 1 ô
-        if (IsInsideBoard(currentX, currentY + direction) && board[currentX, currentY + direction] == null)
+        if (IsInsideBoard(currentX, currentY + direction) && ChessBoard.Instance.ChessPieces[currentX, currentY + direction] == null)
         {
             result.Add(new Vector2Int(currentX, currentY + direction));
         }
 
         // Di chuyển thẳng 2 ô ở lượt đầu
         if (currentY == (team == PieceTeam.White ? 1 : 6) &&
-            board[currentX, currentY + direction] == null && 
-            board[currentX, currentY + 2 * direction] == null)
+            ChessBoard.Instance.ChessPieces[currentX, currentY + direction] == null && 
+            ChessBoard.Instance.ChessPieces[currentX, currentY + 2 * direction] == null)
         {
             result.Add(new Vector2Int(currentX, currentY + 2 * direction));
         }
 
         // Ăn chéo
         if (IsInsideBoard(currentX + 1, currentY + direction) &&
-            board[currentX + 1, currentY + direction] != null &&
-            board[currentX + 1, currentY + direction].team != team)
+            ChessBoard.Instance.ChessPieces[currentX + 1, currentY + direction] != null &&
+            ChessBoard.Instance.ChessPieces[currentX + 1, currentY + direction].team != team)
         {
             result.Add(new Vector2Int(currentX + 1, currentY + direction));
         }
         if (IsInsideBoard(currentX - 1, currentY + direction) &&
-            board[currentX - 1, currentY + direction] != null &&
-            board[currentX - 1, currentY + direction].team != team)
+            ChessBoard.Instance.ChessPieces[currentX - 1, currentY + direction] != null &&
+            ChessBoard.Instance.ChessPieces[currentX - 1, currentY + direction].team != team)
         {
             result.Add(new Vector2Int(currentX - 1, currentY + direction));
         }
@@ -114,5 +114,23 @@ public class Pawn : ChessPiece
             currentPromotePawn = this;
             CanvasController.Instance.ShowPromoteChoice();
         }
+    }
+    
+    public override List<Vector2Int>  GetAvailableAttacks()
+    {
+        List<Vector2Int> result = new List<Vector2Int>();
+        
+        int direction = team == PieceTeam.White ? 1 : -1;
+        // Ăn chéo
+        if (IsInsideBoard(currentX + 1, currentY + direction))
+        {
+            result.Add(new Vector2Int(currentX + 1, currentY + direction));
+        }
+        if (IsInsideBoard(currentX - 1, currentY + direction))
+        {
+            result.Add(new Vector2Int(currentX - 1, currentY + direction));
+        }
+
+        return result;
     }
 }

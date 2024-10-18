@@ -34,7 +34,7 @@ public abstract class ChessPiece : MonoBehaviour
 
     public virtual bool IsValidMove(int x, int y)
     {
-        List<Vector2Int> availableMoves = GetAvailableMoves(ref ChessBoard.Instance.ChessPieces);
+        List<Vector2Int> availableMoves = GetAvailableMoves();
         
         foreach (Vector2Int move in availableMoves)
         {
@@ -59,8 +59,12 @@ public abstract class ChessPiece : MonoBehaviour
         }
     }
 
-    public abstract List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board);
-    
+    public abstract List<Vector2Int> GetAvailableMoves();
+
+    public virtual List<Vector2Int> GetAvailableAttacks()
+    {
+        return GetAvailableMoves();
+    }
     public bool IsInsideBoard(int x, int y)
     {
         return x is >= 0 and < 8 && y is >= 0 and < 8;

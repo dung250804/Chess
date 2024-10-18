@@ -16,39 +16,36 @@ public class King : ChessPiece
         new Vector2Int(1, -1),  // Down Right
         new Vector2Int(-1, -1)  // Down Left
     };
-    
-    
-    
-    
+
     public override bool IsValidMove(int x, int y)
     {
-        // Kiểm tra nhập thành nếu vua di chuyển 2 ô ngang
+        // Castling check if moving two squares horizontally
         if (y == currentY && (x == currentX + 2 || x == currentX - 2))
         {
-            if (!hasMoved)  // Vua chưa di chuyển
+            if (!hasMoved)  // King has not moved yet
             {
                 ChessPiece leftRook = ChessBoard.Instance.ChessPieces[0, currentY];
                 ChessPiece rightRook = ChessBoard.Instance.ChessPieces[7, currentY];
 
-                if (x == currentX - 2 && CanCastle(leftRook, ref ChessBoard.Instance.ChessPieces))
+                if (x == currentX - 2 && CanCastle(leftRook))
                 {
                     int newX = leftRook.team == PieceTeam.White ? leftRook.currentX + 3 : leftRook.currentX + 2;
                     ChessBoard.Instance.MoveTo(leftRook, newX, currentY);
-                    Debug.Log("Nhập thành xa thành công!");
+                    Debug.Log("Long castle successful!");
                     return true;
                 }
-                if (x == currentX + 2 && CanCastle(rightRook, ref ChessBoard.Instance.ChessPieces))
+                if (x == currentX + 2 && CanCastle(rightRook))
                 {
-                    int newX = leftRook.team == PieceTeam.White ? leftRook.currentX - 2 : leftRook.currentX - 3;
+                    int newX = rightRook.team == PieceTeam.White ? rightRook.currentX - 2 : rightRook.currentX - 3;
                     ChessBoard.Instance.MoveTo(rightRook, newX, currentY);
-                    Debug.Log("Nhập thành gần thành công!");
+                    Debug.Log("Short castle successful!");
                     return true;
                 }
             }
         }
 
-        // Kiểm tra các nước đi thông thường
-        List<Vector2Int> availableMoves = GetAvailableMoves(ref ChessBoard.Instance.ChessPieces);
+        // Standard move validation
+        List<Vector2Int> availableMoves = GetAvailableMoves();
         foreach (Vector2Int move in availableMoves)
         {
             if (x == move.x && y == move.y)
@@ -60,12 +57,11 @@ public class King : ChessPiece
         return false;
     }
 
-    
-    public override List<Vector2Int> GetAvailableMoves(ref ChessPiece[,] board)
+    public override List<Vector2Int> GetAvailableMoves()
     {
         List<Vector2Int> result = new List<Vector2Int>();
 
-        // Duyệt các hướng đi hợp lệ của vua
+        // Check all valid king moves
         foreach (Vector2Int direction in directions)
         {
             int newX = currentX + direction.x;
@@ -73,65 +69,190 @@ public class King : ChessPiece
 
             if (IsInsideBoard(newX, newY))
             {
-                ChessPiece targetPiece = board[newX, newY];
-                if (targetPiece == null || targetPiece.team != team)
+                ChessPiece targetPiece = ChessBoard.Instance.ChessPieces[newX, newY];
+                if ((targetPiece == null || targetPiece.team != team) &&
+                    !IsSquareUnderAttack(newX, newY, team))
                 {
                     result.Add(new Vector2Int(newX, newY));
                 }
             }
         }
 
-        // Kiểm tra khả năng nhập thành nếu vua chưa di chuyển
+        // Check for castling
         if (!hasMoved)
         {
-            ChessPiece leftRook = board[0, currentY];
-            ChessPiece rightRook = board[7, currentY];
+            ChessPiece leftRook = ChessBoard.Instance.ChessPieces[0, currentY];
+            ChessPiece rightRook = ChessBoard.Instance.ChessPieces[7, currentY];
 
-            if (CanCastle(leftRook, ref board))
+            if (CanCastle(leftRook))
             {
-                result.Add(new Vector2Int(currentX - 2, currentY));  // Nhập thành xa
+                if(!IsSquareUnderAttack(currentX - 2, currentY, team)) 
+                {
+                    result.Add(new Vector2Int(currentX - 2, currentY));  // Long castle
+                }
             }
-            if (CanCastle(rightRook, ref board))
+            if (CanCastle(rightRook))
             {
-                result.Add(new Vector2Int(currentX + 2, currentY));  // Nhập thành gần
+                if(!IsSquareUnderAttack(currentX + 2, currentY, team)) 
+                {
+                    result.Add(new Vector2Int(currentX + 2, currentY));  // Short castle
+                }
             }
         }
-        
-        // (Thêm) Kiểm tra các ô không bị chiếu
-        // ....................................
 
         return result;
     }
-    
-    public bool CanCastle(ChessPiece rook, ref ChessPiece[,] board)
+
+    public bool CanCastle(ChessPiece rook)
     {
-        // Kiểm tra xem quân xe có hợp lệ để nhập thành không
         if (rook == null || rook.team != team || rook.type != PieceType.Rook) return false;
-
-        // Kiểm tra cả vua và xe chưa di chuyển
         if (hasMoved || rook.hasMoved) return false;
-
-        // Vua và xe phải trên cùng một hàng
         if (currentY != rook.currentY) return false;
 
-        // Không có quân nào chắn giữa vua và xe
         int startCol = Math.Min(currentX, rook.currentX) + 1;
         int endCol = Math.Max(currentX, rook.currentX);
 
+        // Check for pieces between king and rook
         for (int col = startCol; col < endCol; col++)
         {
-            if (board[col, currentY] != null) return false;
+            if (ChessBoard.Instance.ChessPieces[col, currentY] != null) return false;
         }
         
-        /*// Điều kiện 4: Các ô vua đi qua không bị tấn công
-        int direction = (rook.Position.Col > king.Position.Col) ? 1 : -1;
-        for (int i = 0; i <= 2; i++)
-        {
-            int checkCol = king.Position.Col + i * direction;
-            if (isAttacked[king.Position.Row][checkCol])
-                return false;
-        }*/
+        // Mate
+        if (IsSquareUnderAttack(currentX, currentY, team)) return false;
+        
 
         return true;
+    }
+
+    public override List<Vector2Int>  GetAvailableAttacks()
+    {
+        List<Vector2Int> result = new List<Vector2Int>();
+        foreach (Vector2Int direction in directions)
+        {
+            int newX = currentX + direction.x;
+            int newY = currentY + direction.y;
+
+            if (IsInsideBoard(newX, newY))
+            {
+                result.Add(new Vector2Int(newX, newY));
+            }
+        }
+
+        return result;
+    }
+
+    private bool IsSquareUnderAttack(int x, int y, PieceTeam team)
+    {
+        foreach (ChessPiece piece in ChessBoard.Instance.ChessPieces)
+        {
+            if (piece != null && piece.team != team && piece.type != PieceType.King)
+            {
+                List<Vector2Int> opponentAttacks = piece.GetAvailableAttacks();
+                foreach (Vector2Int move in opponentAttacks)
+                {
+                    if (move.x == x && move.y == y)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    private bool IsSquareUnderAttack(int x, int y, PieceTeam team, ChessPiece[,] board)
+    {
+        foreach (ChessPiece piece in board)
+        {
+            if (piece != null && piece.team != team && piece.type != PieceType.King)
+            {
+                List<Vector2Int> opponentAttacks = piece.GetAvailableAttacks();
+                foreach (Vector2Int move in opponentAttacks)
+                {
+                    if (move.x == x && move.y == y)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    public bool IsCheck()
+    {
+        // Kiểm tra xem Vua của đội này có bị chiếu không
+        return IsSquareUnderAttack(currentX, currentY, team);
+    }
+    
+    public bool IsCheck(ChessPiece[,] board)
+    {
+        // Kiểm tra xem Vua của đội này có bị chiếu không
+        return IsSquareUnderAttack(currentX, currentY, team, board);
+    }
+
+    // Lấy nước đi hợp lệ cho mỗi quân cờ để thoát chiếu
+    private List<Vector2Int> GetValidMovesForEachValidPiece(ChessPiece piece)
+    {
+        List<Vector2Int> validMoves = new List<Vector2Int>();
+        List<Vector2Int> potentialMoves = piece.GetAvailableMoves();
+
+        foreach (Vector2Int move in potentialMoves)
+        {
+            // Tạo bản sao tạm thời của bàn cờ
+            ChessPiece[,] tempBoard = (ChessPiece[,])ChessBoard.Instance.ChessPieces.Clone();
+            tempBoard[move.x, move.y] = piece;
+            tempBoard[piece.currentX, piece.currentY] = null;
+
+            // Cập nhật vị trí tạm thời của quân cờ
+            int originalX = piece.currentX;
+            int originalY = piece.currentY;
+            piece.currentX = move.x;
+            piece.currentY = move.y;
+
+            // Nếu nước đi giúp thoát khỏi chiếu, thêm vào danh sách hợp lệ
+            if (!IsCheck(tempBoard))
+                validMoves.Add(move);
+
+            // Khôi phục vị trí ban đầu của quân cờ
+            piece.currentX = originalX;
+            piece.currentY = originalY;
+        }
+
+        return validMoves;
+    }
+
+    // Lấy danh sách các quân cờ với nước đi hợp lệ
+    public Dictionary<ChessPiece, List<Vector2Int>> GetPiecesWithValidMoves()
+    {
+        Dictionary<ChessPiece, List<Vector2Int>> validPieces = new Dictionary<ChessPiece,List<Vector2Int>>();
+
+        // Duyệt qua toàn bộ quân cờ của đội đang đi
+        for (int i = 0; i < ChessBoard.BOARD_SIZE; i++)
+        {
+            for (int j = 0; j < ChessBoard.BOARD_SIZE; j++)
+            {
+                ChessPiece piece = ChessBoard.Instance.ChessPieces[i, j];
+                if (piece != null && piece.team == team)
+                {
+                    List<Vector2Int> validMoves = GetValidMovesForEachValidPiece(piece);
+                    if (validMoves.Count > 0)
+                        validPieces[piece] = validMoves;
+                }
+            }
+        }
+
+        return validPieces;
+    }
+
+    // Kiểm tra Checkmate
+    public bool IsCheckmate()
+    {
+        if (!IsCheck()) return false; // Không bị chiếu thì không phải chiếu hết
+
+        // Kiểm tra có quân cờ nào có nước đi hợp lệ để thoát chiếu không
+        Dictionary<ChessPiece, List<Vector2Int>> piecesWithMoves = GetPiecesWithValidMoves();
+        return piecesWithMoves.Count == 0; // Nếu không có quân nào, đây là checkmate
     }
 }

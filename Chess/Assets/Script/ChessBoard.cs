@@ -21,10 +21,9 @@ public class ChessBoard : MonoBehaviour
             TileArray = new GameObject[BOARD_SIZE, BOARD_SIZE];
             ChessPieces = new ChessPiece[BOARD_SIZE, BOARD_SIZE];
             GenerateChessBoard();
-            InitAllChessPieces();
         }
     }
-
+    
     public const int BOARD_SIZE = 8;
 
     [SerializeField] private float tileSize;
@@ -36,6 +35,11 @@ public class ChessBoard : MonoBehaviour
 
     public ChessPiece[,] ChessPieces;
     public List<Vector2Int> availableMoves = new List<Vector2Int>();
+
+    private void Start()
+    {
+        InitAllChessPieces();
+    }
 
     void FixedUpdate()
     {
@@ -94,8 +98,8 @@ public class ChessBoard : MonoBehaviour
         ChessPieces[0, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Rook, 0, 7);
         ChessPieces[1, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Knight, 1, 7);
         ChessPieces[2, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Bishop, 2, 7);
-        ChessPieces[3, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.King, 3, 7);
-        ChessPieces[4, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Queen, 4, 7);
+        ChessPieces[3, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Queen, 3, 7);
+        ChessPieces[4, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.King, 4, 7);
         ChessPieces[5, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Bishop, 5, 7);
         ChessPieces[6, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Knight, 6, 7);
         ChessPieces[7, 7] = SpawnSinglePiece(PieceTeam.Black, PieceType.Rook, 7, 7);
@@ -103,6 +107,7 @@ public class ChessBoard : MonoBehaviour
         {
             ChessPieces[x, 6] = SpawnSinglePiece(PieceTeam.Black, PieceType.Pawn, x, 6);
         }
+        InteractSystem.Instance.FindKings();
     }
 
     public void ResetChessBoard()
@@ -285,13 +290,14 @@ public class ChessBoard : MonoBehaviour
         return false;
     }
 
-    private void CheckMate(PieceTeam team)
+    public void CheckMate(PieceTeam team)
     {
-        DisplayVictory(team);
+        StartCoroutine(DisplayVictory(team));
     }
     
-    private void DisplayVictory(PieceTeam team)
+    private IEnumerator DisplayVictory(PieceTeam team)
     {
+        yield return new WaitForSeconds(0.8f);
         CanvasController.Instance.ShowEndGameMenu(team);
     }
 }

@@ -18,6 +18,9 @@ public class InteractSystem : MonoBehaviour
         }
     }
 
+    private King whiteKing;
+    private King blackKing; 
+    
     public ChessPiece currentChosenChessPiece;
     public Vector2Int previousPosition;
     public bool isWhiteTurn = true;
@@ -50,8 +53,21 @@ public class InteractSystem : MonoBehaviour
                         currentChosenChessPiece = null;
                         ChessBoard.Instance.HideAllHighlightAvailableMoves();
                         isWhiteTurn = !isWhiteTurn;
+                        if (isWhiteTurn)
+                        {
+                            if (whiteKing.IsCheckmate())
+                            {
+                                ChessBoard.Instance.CheckMate(PieceTeam.White);
+                            }
+                        }
+                        else
+                        {
+                            if (blackKing.IsCheckmate())
+                            {
+                                ChessBoard.Instance.CheckMate(PieceTeam.Black);
+                            }
+                        }
                         return;
-                        
                     }
                     currentChosenChessPiece = null;
                     ChessBoard.Instance.HideAllHighlightAvailableMoves();
@@ -64,12 +80,72 @@ public class InteractSystem : MonoBehaviour
                     if ((ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y].team == PieceTeam.White && isWhiteTurn)
                         || (ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y].team == PieceTeam.Black && !isWhiteTurn))
                     {
-                        currentChosenChessPiece =
-                            ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y];
-                        List<Vector2Int> availableMoves =
-                            currentChosenChessPiece.GetAvailableMoves(ref ChessBoard.Instance.ChessPieces);
-                        ChessBoard.Instance.ShowAllHighlightAvailableMoves(availableMoves);
+                        List<Vector2Int> availableMoves = new List<Vector2Int>();
+                        if (!whiteKing.IsCheck() && !blackKing.IsCheck())
+                        {
+                            currentChosenChessPiece =
+                                ChessBoard.Instance.ChessPieces[choosePiecePosition.x, choosePiecePosition.y];
+                            availableMoves = currentChosenChessPiece.GetAvailableMoves();
+                            ChessBoard.Instance.ShowAllHighlightAvailableMoves(availableMoves);
+                        }
+                        else
+                        {
+                            if (isWhiteTurn)
+                            {
+                                if (whiteKing.IsCheck())
+                                {
+                                    foreach (var chessPiece in whiteKing.GetPiecesWithValidMoves())
+                                    {
+                                        if (chessPiece.Key == ChessBoard.Instance.ChessPieces[choosePiecePosition.x,
+                                                choosePiecePosition.y])
+                                        {
+                                            currentChosenChessPiece =
+                                                chessPiece.Key;
+                                            availableMoves = chessPiece.Value;
+                                            ChessBoard.Instance.ShowAllHighlightAvailableMoves(availableMoves);
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (blackKing.IsCheck())
+                                {
+                                    foreach (var chessPiece in blackKing.GetPiecesWithValidMoves())
+                                    {
+                                        if (chessPiece.Key == ChessBoard.Instance.ChessPieces[choosePiecePosition.x,
+                                                choosePiecePosition.y])
+                                        {
+                                            currentChosenChessPiece =
+                                                chessPiece.Key;
+                                            availableMoves = chessPiece.Value;
+                                            ChessBoard.Instance.ShowAllHighlightAvailableMoves(availableMoves);
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
+                }
+            }
+        }
+    }
+
+    public void FindKings()
+    {
+        foreach (ChessPiece piece in ChessBoard.Instance.ChessPieces)
+        {
+            if (piece != null && piece.type == PieceType.King)
+            {
+                if (piece.team == PieceTeam.White)
+                {
+                    whiteKing = (King)piece;
+                }
+                else
+                {
+                    blackKing = (King)piece;
                 }
             }
         }
