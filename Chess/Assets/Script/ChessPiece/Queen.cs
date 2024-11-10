@@ -263,6 +263,7 @@ public class Queen : ChessPiece
                 break;
             }
         }
+
         
         return result;
     }

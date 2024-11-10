@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,8 +19,8 @@ public class InteractSystem : MonoBehaviour
         }
     }
 
-    private King whiteKing;
-    private King blackKing; 
+    public King whiteKing;
+    public King blackKing; 
     
     public ChessPiece currentChosenChessPiece;
     public Vector2Int previousPosition;

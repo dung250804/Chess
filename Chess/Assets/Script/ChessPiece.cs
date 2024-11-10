@@ -65,7 +65,7 @@ public abstract class ChessPiece : MonoBehaviour
     {
         return GetAvailableMoves();
     }
-    public bool IsInsideBoard(int x, int y)
+    public static bool IsInsideBoard(int x, int y)
     {
         return x is >= 0 and < 8 && y is >= 0 and < 8;
     }

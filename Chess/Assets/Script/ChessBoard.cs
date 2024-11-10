@@ -184,6 +184,40 @@ public class ChessBoard : MonoBehaviour
         chessPiece.isMoving = true;
         chessPiece.hasMoved = true;
     }
+    
+    public void BotMoveTo(ChessPiece chessPiece, int x, int y)
+    {
+        if(!chessPiece.IsValidMove(x,y)) return;
+        //Nếu có quân cờ ở đó
+        if (ChessPieces[x, y] != null)
+        {
+            if (chessPiece.team == ChessPieces[x, y].team)
+            {
+                if (chessPiece.type != PieceType.King || ChessPieces[x, y].type != PieceType.Rook)
+                {
+                    Debug.Log("return");
+                    return;
+                }
+            }
+            
+            //Checkmate
+            if (ChessPieces[x, y].type == PieceType.King)
+            {
+                CheckMate(ChessPieces[x, y].team == PieceTeam.Black ? PieceTeam.Black : PieceTeam.White);
+            }
+            foreach (Transform child in TileArray[x,y].transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+        
+        Vector2Int previousPosition = new Vector2Int(chessPiece.currentX, chessPiece.currentY);
+        chessPiece.SetPosition(new Vector2Int(x, y));
+        ChessPieces[x, y] = chessPiece;
+        ChessPieces[previousPosition.x, previousPosition.y] = null;
+        chessPiece.isMoving = true;
+        chessPiece.hasMoved = true;
+    }
 
     /**
      *  <param name="alpha">0:Default 1:Hover.</param>
@@ -299,5 +333,39 @@ public class ChessBoard : MonoBehaviour
     {
         yield return new WaitForSeconds(0.8f);
         CanvasController.Instance.ShowEndGameMenu(team);
+    }
+    
+    public (int, int, int, int) ConvertUciMoveToCoordinates(string uciMove)
+    {
+        // Kiểm tra độ dài của chuỗi nước đi (cần đủ 4 ký tự)
+        if (uciMove.Length != 4)
+        {
+            Debug.LogError("Invalid UCI move format");
+            return (-1, -1, -1, -1); // Trả về -1 nếu chuỗi không hợp lệ
+        }
+
+        // Lấy các ký tự từ UCI và chuyển đổi thành tọa độ
+        int fromX = uciMove[0] - 'a'; // Chuyển ký tự 'a'-'h' thành 0-7
+        int fromY = uciMove[1] - '1'; // Chuyển ký tự '1'-'8' thành 0-7
+        int toX = uciMove[2] - 'a';   // Chuyển ký tự 'a'-'h' thành 0-7
+        int toY = uciMove[3] - '1';   // Chuyển ký tự '1'-'8' thành 0-7
+
+        return (fromX, fromY, toX, toY);
+    }
+    
+    // Hàm chuyển nước đi từ tọa độ bảng cờ sang UCI format (ví dụ: e2e4)
+    private string ConvertMoveToUCI(int fromX, int fromY, int toX, int toY)
+    {
+        string from = ConvertToChessNotation(fromX, fromY);
+        string to = ConvertToChessNotation(toX, toY);
+        return from + to;
+    }
+
+    // Hàm chuyển đổi tọa độ thành ký hiệu cờ vua
+    private string ConvertToChessNotation(int x, int y)
+    {
+        char file = (char)('a' + x);
+        int rank = y + 1;
+        return $"{file}{rank}";
     }
 }

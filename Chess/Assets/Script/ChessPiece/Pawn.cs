@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Pawn : ChessPiece
 {
-    private static Vector2Int _enPassantTarget = new Vector2Int(-1, -1); // Vị trí của quân Tốt có thể bị bắt qua sông
+    public static Vector2Int _enPassantTarget = new Vector2Int(-1, -1); // Vị trí của quân Tốt có thể bị bắt qua sông
     private static ChessPiece currentEnPassantTarget = null;
     public static ChessPiece currentPromotePawn = null;
 

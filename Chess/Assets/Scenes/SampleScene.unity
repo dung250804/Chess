@@ -873,6 +873,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 365364766}
   m_CullTransparentMesh: 1
+--- !u!1 &372425053
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 372425055}
+  - component: {fileID: 372425054}
+  m_Layer: 0
+  m_Name: LiChessBot1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &372425054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372425053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bac364e911cd7874ea519e3c3574d21e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pythonPath: C:\Users\Tuan Dung\IdeaProjects\CSCHTTT\venv\Scripts\python.exe
+  scriptPath: C:\Users\Tuan Dung\IdeaProjects\CSCHTTT\.idea\Chess\Model1\Predict.py
+  whiteTeam: 1
+--- !u!4 &372425055
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372425053}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.5174437, y: -8.534339, z: 7.8673463}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &405025623
 GameObject:
   m_ObjectHideFlags: 0
@@ -2679,6 +2726,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1355774881}
   m_CullTransparentMesh: 1
+--- !u!1 &1403230171
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1403230173}
+  - component: {fileID: 1403230174}
+  m_Layer: 0
+  m_Name: LiChessBot2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1403230173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1403230171}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.860471, y: -7.5869517, z: 3.408685}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1403230174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1403230171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bac364e911cd7874ea519e3c3574d21e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pythonPath: C:\Users\Tuan Dung\IdeaProjects\CSCHTTT\venv\Scripts\python.exe
+  scriptPath: C:\Users\Tuan Dung\IdeaProjects\CSCHTTT\.idea\Chess\Model3\Predict.py
+  whiteTeam: 0
 --- !u!1 &1428550623
 GameObject:
   m_ObjectHideFlags: 0
@@ -3006,6 +3100,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07016bb8870530e41a5449986259e7ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  whiteKing: {fileID: 0}
+  blackKing: {fileID: 0}
   currentChosenChessPiece: {fileID: 0}
   previousPosition: {x: 0, y: 0}
   isWhiteTurn: 1
@@ -3732,3 +3828,5 @@ SceneRoots:
   - {fileID: 1750503243}
   - {fileID: 405025627}
   - {fileID: 319870408}
+  - {fileID: 1403230173}
+  - {fileID: 372425055}

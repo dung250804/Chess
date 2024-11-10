@@ -29,14 +29,14 @@ public class King : ChessPiece
 
                 if (x == currentX - 2 && CanCastle(leftRook))
                 {
-                    int newX = leftRook.team == PieceTeam.White ? leftRook.currentX + 3 : leftRook.currentX + 2;
+                    int newX = leftRook.currentX + 3;
                     ChessBoard.Instance.MoveTo(leftRook, newX, currentY);
                     Debug.Log("Long castle successful!");
                     return true;
                 }
                 if (x == currentX + 2 && CanCastle(rightRook))
                 {
-                    int newX = rightRook.team == PieceTeam.White ? rightRook.currentX - 2 : rightRook.currentX - 3;
+                    int newX = rightRook.currentX - 2;
                     ChessBoard.Instance.MoveTo(rightRook, newX, currentY);
                     Debug.Log("Short castle successful!");
                     return true;
@@ -146,7 +146,7 @@ public class King : ChessPiece
     {
         foreach (ChessPiece piece in ChessBoard.Instance.ChessPieces)
         {
-            if (piece != null && piece.team != team && piece.type != PieceType.King)
+            if (piece != null && piece.team != team)
             {
                 List<Vector2Int> opponentAttacks = piece.GetAvailableAttacks();
                 foreach (Vector2Int move in opponentAttacks)
@@ -192,7 +192,6 @@ public class King : ChessPiece
         return IsSquareUnderAttack(currentX, currentY, team, board);
     }
 
-    // Lấy nước đi hợp lệ cho mỗi quân cờ để thoát chiếu
     private List<Vector2Int> GetValidMovesForEachValidPiece(ChessPiece piece)
     {
         List<Vector2Int> validMoves = new List<Vector2Int>();
@@ -200,28 +199,38 @@ public class King : ChessPiece
 
         foreach (Vector2Int move in potentialMoves)
         {
-            // Tạo bản sao tạm thời của bàn cờ
-            ChessPiece[,] tempBoard = (ChessPiece[,])ChessBoard.Instance.ChessPieces.Clone();
-            tempBoard[move.x, move.y] = piece;
-            tempBoard[piece.currentX, piece.currentY] = null;
+            // Deep clone the board to create an independent copy for each move
+            ChessPiece[,] tempBoard = ChessBoard.Instance.ChessPieces;
 
-            // Cập nhật vị trí tạm thời của quân cờ
+            // Move the piece temporarily in the cloned board
             int originalX = piece.currentX;
             int originalY = piece.currentY;
+            ChessPiece posPiece = tempBoard[move.x, move.y];
+            tempBoard[move.x, move.y] = piece;
+            tempBoard[originalX, originalY] = null;
+
+            // Update the cloned piece’s position
             piece.currentX = move.x;
             piece.currentY = move.y;
-
-            // Nếu nước đi giúp thoát khỏi chiếu, thêm vào danh sách hợp lệ
+            
+            // Check if the move prevents check
             if (!IsCheck(tempBoard))
+            {
                 validMoves.Add(move);
+                Debug.Log(piece + " " + "hehe");
+            }
 
-            // Khôi phục vị trí ban đầu của quân cờ
+            // Revert the piece's position
             piece.currentX = originalX;
             piece.currentY = originalY;
+            
+            tempBoard[move.x, move.y] = posPiece;
+            tempBoard[originalX, originalY] = piece;
         }
 
         return validMoves;
     }
+
 
     // Lấy danh sách các quân cờ với nước đi hợp lệ
     public Dictionary<ChessPiece, List<Vector2Int>> GetPiecesWithValidMoves()
@@ -237,6 +246,7 @@ public class King : ChessPiece
                 if (piece != null && piece.team == team)
                 {
                     List<Vector2Int> validMoves = GetValidMovesForEachValidPiece(piece);
+                    Debug.Log(piece + " " + validMoves.Count);
                     if (validMoves.Count > 0)
                         validPieces[piece] = validMoves;
                 }
@@ -255,4 +265,5 @@ public class King : ChessPiece
         Dictionary<ChessPiece, List<Vector2Int>> piecesWithMoves = GetPiecesWithValidMoves();
         return piecesWithMoves.Count == 0; // Nếu không có quân nào, đây là checkmate
     }
+
 }
